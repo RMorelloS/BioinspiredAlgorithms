@@ -16,35 +16,67 @@ Parameter struct: *parameters*
 The names of these parameters may vary for each algorithm. The *parameters* struct contains dinamic parameters which vary for each algorithm. In this study, we considered the following algorithms and their respective parameters:
 
 # Cuckoo Search via Lévy Flights (CS): 
+
  Population size (pop_size) = 40;
+ 
  Probability of host bird discovering the cucoo egg (pa) = 0.5;
+ 
  Upper Bound for image thresholding (UB) = 253;
+ 
  Lower Bound for image thresholding (LB) = 2.
 # Whale Optimization Algorithm (WOA): 
+
  Population size (pop_size) = 30;
+ 
  Upper Bound for image thresholding (UB) = 253;
+ 
  Lower Bound for image thresholding (LB) = 2.
+ 
  # Krill Herd Algorithm (KH):
+ 
  Population size (pop_size) = 40;
+ 
  Upper Bound for image thresholding (UB) = 253;
+ 
  Lower Bound for image thresholding (LB) = 2.
+ 
  # Elephant Herding Optimization (EHO):
+ 
  Population size (pop_size) = 100;
+ 
  Number of clans (numClan) = 5;
+ 
  Elitism (Keep) = 2;
+ 
  Alpha (alpha) = 0.5;
+ 
  Beta (beta) = 0.1;
+ 
  Upper Bound for image thresholding (UB) = 253;
+ 
  Lower Bound for image thresholding (LB) = 2.
+ 
  # Grasshopper Optimization Algorithm (GOA):
+ 
  Population size (pop_size) = 30;
+ 
  Upper Bound for image thresholding (UB) = 253;
+ 
  Lower Bound for image thresholding (LB) = 2.
+ 
  # Grey Wolf Optimizer (GWO):
+ 
  Population size (pop_size) = 30;
+ 
  Upper Bound for image thresholding (UB) = 253;
+ 
  Lower Bound for image thresholding (LB) = 2.
+ 
  # Firefly Algorithm (FA):
+ 
  Population size (pop_size) = 50;
+ 
  Upper Bound for image thresholding (UB) = 253;
+ 
  Lower Bound for image thresholding (LB) = 2.
+
