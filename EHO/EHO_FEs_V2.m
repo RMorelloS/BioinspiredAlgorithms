@@ -16,7 +16,7 @@
 % the the nature of metaheuristic algorithms.
 %%
 
-function [MinCost,Population, numGeracoes, melhores_avaliacoes] = EHO_FEs_V2(ProblemFunction, DisplayFlag, RandSeed, image, geracoes, q, thresholds, parametrosEHO)
+function [MinCost,Population, numGeracoes, melhores_avaliacoes] = EHO_FEs_V2(ProblemFunction, DisplayFlag, RandSeed, image, geracoes, q, thresholds, parameters)
 
 %  Elephant Herding Optimization (EHO) software for minimizing a general function
 % The fixed Function Evaluations (FEs) is considered as termination condition.
@@ -32,11 +32,11 @@ function [MinCost,Population, numGeracoes, melhores_avaliacoes] = EHO_FEs_V2(Pro
 %         individuals, but it does not then recalculate the cost of the replaced individuals.
  
 Histogram = psrGrayHistogram(image);
-range = [2 253];
+range = [parameters.LB parameters.UB];
 
 
 [OPTIONS, MinCost, AvgCost, ~, CostFunction, FeasibleFunction, ...
-    MaxParValue, MinParValue, Population] = Init(DisplayFlag, ProblemFunction, RandSeed, Histogram, geracoes, q, thresholds, parametrosEHO, range);
+    MaxParValue, MinParValue, Population] = Init(DisplayFlag, ProblemFunction, RandSeed, Histogram, geracoes, q, thresholds, parameters, range);
 nEvaluations = OPTIONS.popsize;
 
 numGeracoes = OPTIONS.Maxgen;
@@ -44,11 +44,11 @@ numGeracoes = OPTIONS.Maxgen;
 melhores_avaliacoes = zeros(OPTIONS.Maxgen,1);
 % % % % % % % % % % % %             Initial parameter setting          % % % % % % % % % % % %%%%
 %% Initial parameter setting
-Keep = parametrosEHO.Keep; % elitism parameter: how many of the best elephants to keep from one generation to the next
+Keep = parameters.Keep; % elitism parameter: how many of the best elephants to keep from one generation to the next
 numElephantInEachClan = OPTIONS.numElephantInEachClan*ones(1, OPTIONS.numClan);
 dim = OPTIONS.numVar;
-alpha = parametrosEHO.alpha;
-beta = parametrosEHO.beta;
+alpha = parameters.alpha;
+beta = parameters.beta;
 % % % % % % % % % % % %       End of Initial parameter setting       % % % % % % % % % % % %%
 %%
 

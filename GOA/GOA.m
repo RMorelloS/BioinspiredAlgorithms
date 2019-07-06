@@ -16,21 +16,40 @@
 %               DOI: http://dx.doi.org/10.1016/j.advengsoft.2017.01.004   %
 %                                                                         %
 %_________________________________________________________________________%
-
-
-
-
+%--------------------------------------------------------------
 % The Grasshopper Optimization Algorithm
-function [TargetPosition, TargetFitness, numGeracoes, melhores_avaliacoes]=GOA(im1, dim, Max_iter, q, parametros)
-numGeracoes = Max_iter;
-melhores_avaliacoes = zeros(Max_iter,1);
+% Evaluation function changed to Tsallis entropy. Changed by 
+% Ricardo Morello Santos, Prof. Guilherme Wachs Lopes, 
+% Prof. Nilson Saito and Prof. Paulo Sérgio Rodrigues
+%--------------------------------------------------------------
+% Input parameters considered:
+% Dinamic parameters:
+% The image to be segmented: im1;
+% Number of thresholds: dim;
+% Number of generations: Max_iter;
+% q value for Tsallis entropy: q
+% Static parameters:
+% A parameter struct containing:
+% Population size (pop_size) = 30;
+% Upper Bound for image thresholding (UB) = 253;
+% Lower Bound for image thresholding (LB) = 2.
+%--------------------------------------------------------------
+% Output parameters considered:
+% Optimized thresholds: TargetPosition;
+% Entropy value for the optimized thresholds: TargetFitness;
+% Number of generations until convergence: num_generations;
+% Entropy value for each generation: generation_entropy.
+%--------------------------------------------------------------
+function [TargetPosition, TargetFitness, num_generations, generation_entropy]=GOA(im1, dim, Max_iter, q, parameters)
+num_generations = Max_iter;
+generation_entropy = zeros(Max_iter,1);
 H = psrGrayHistogram(im1);
 functionName = 'F0';
 [fobj] = Get_Functions_detailsGOA(functionName);
-N=parametros.nGafanhotos;
+N=parameters.pop_size;
 %disp('GOA is now estimating the global optimum for your problem....')
-ub = parametros.UB;
-lb = parametros.LB;
+ub = parameters.UB;
+lb = parameters.LB;
 
 flag=0;
 if size(ub,1)==1
@@ -137,10 +156,10 @@ while l<=Max_iter+1
     
     
    
-    melhores_avaliacoes(l-1, 1) = TargetFitness;
-    if l > 30  && std(melhores_avaliacoes(l-30:l-1))  < 0.01
-       std(melhores_avaliacoes(l-30:l-1));
-       numGeracoes = l - 1;
+    generation_entropy(l-1, 1) = TargetFitness;
+    if l > 30  && std(generation_entropy(l-30:l-1))  < 0.01
+       std(generation_entropy(l-30:l-1));
+       num_generations = l - 1;
        break;
     end
  

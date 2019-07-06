@@ -16,13 +16,35 @@
 %               DOI: http://dx.doi.org/10.1016/j.advengsoft.2016.01.008   %
 %                                                                         %
 %_________________________________________________________________________%
-
-
+%--------------------------------------------------------------
 % The Whale Optimization Algorithm
-function [Leader_pos, Leader_score, numGeracoes, melhores_avaliacoes]=WOA(im1, dim, Max_iter, q, parametros)
-numGeracoes = Max_iter;
-melhores_avaliacoes = zeros(Max_iter,1);
-SearchAgents_no = parametros.nBaleias;
+% Evaluation function changed to Tsallis entropy. Changed by 
+% Ricardo Morello Santos, Prof. Guilherme Wachs Lopes, 
+% Prof. Nilson Saito and Prof. Paulo Sérgio Rodrigues
+%--------------------------------------------------------------
+% Input parameters considered:
+% Dinamic parameters:
+% The image to be segmented: im1;
+% Number of thresholds: dim;
+% Number of generations: Max_iter;
+% q value for Tsallis entropy: q
+% Static parameters:
+% A parameter struct containing:
+% Population size (pop_size) = 30;
+% Upper Bound for image thresholding (UB) = 253;
+% Lower Bound for image thresholding (LB) = 2.
+%--------------------------------------------------------------
+% Output parameters considered:
+% Optimized thresholds: Leader_pos;
+% Entropy value for the optimized thresholds: Leader_score;
+% Number of generations until convergence: num_generations;
+% Entropy value for each generation: generation_entropy.
+%--------------------------------------------------------------
+
+function [Leader_pos, Leader_score, num_generations, generation_entropy]=WOA(im1, dim, Max_iter, q, parameters)
+num_generations = Max_iter;
+generation_entropy = zeros(Max_iter,1);
+SearchAgents_no = parameters.pop_size;
 
 functionName = 'F0';
 [fobj] = Get_Functions_detailsWOA(functionName);
@@ -30,8 +52,8 @@ H = psrGrayHistogram(im1);
 % initialize position vector and score for the leader
 Leader_pos=zeros(1,dim);
 Leader_score=-inf; %change this to -inf for maximization problems
-ub = parametros.UB;
-lb = parametros.LB;
+ub = parameters.UB;
+lb = parameters.LB;
 
 %Initialize the positions of search agents
 Positions=initializationWOA(SearchAgents_no,dim,ub,lb);
@@ -103,10 +125,10 @@ while t<Max_iter
     t=t+1;
     Convergence_curve(t)=Leader_score;
     [t Leader_score];
-    melhores_avaliacoes(t+1, 1) = Leader_score;
+    generation_entropy(t+1, 1) = Leader_score;
     
-    if t > 30  && std(melhores_avaliacoes(t-30:t))  < 0.01
-       numGeracoes = t;
+    if t > 30  && std(generation_entropy(t-30:t))  < 0.01
+       num_generations = t;
        break;
     end
 end

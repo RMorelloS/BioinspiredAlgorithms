@@ -16,18 +16,40 @@
 %               DOI: 10.1016/j.advengsoft.2013.12.007               %
 %                                                                   %
 %___________________________________________________________________%
-
+%--------------------------------------------------------------
 % Grey Wolf Optimizer
-function [Alpha_pos, Alpha_score, numGeracoes, melhores_avaliacoes] =GWO(im1, dim, Max_iter, q, parametros)
-numGeracoes = Max_iter;
-melhores_avaliacoes = zeros(Max_iter,1);
+% Evaluation function changed to Tsallis entropy. Changed by 
+% Ricardo Morello Santos, Prof. Guilherme Wachs Lopes, 
+% Prof. Nilson Saito and Prof. Paulo Sérgio Rodrigues
+%--------------------------------------------------------------
+% Input parameters considered:
+% Static parameters:
+% The image to be segmented: im1;
+% Number of thresholds: dim;
+% Number of generations: Max_iter;
+% q value for Tsallis entropy: q
+% Dinamic parameters:
+% A parameter struct containing:
+% Population size (pop_size) = 30;
+% Upper Bound for image thresholding (UB) = 253;
+% Lower Bound for image thresholding (LB) = 2.
+%--------------------------------------------------------------
+% Output parameters considered:
+% Optimized thresholds: Leader_pos;
+% Entropy value for the optimized thresholds: Leader_score;
+% Number of generations until convergence: num_generations;
+% Entropy value for each generation: generation_entropy.
+%--------------------------------------------------------------
+function [Alpha_pos, Alpha_score, num_generations, generation_entropy] =GWO(im1, dim, Max_iter, q, parameters)
+num_generations = Max_iter;
+generation_entropy = zeros(Max_iter,1);
 functionName = 'F0';
 [fobj] = Get_Functions_detailsGWO(functionName);
 H = psrGrayHistogram(im1);
-SearchAgents_no = parametros.nLobos;
-ub = parametros.UB;
-lb = parametros.LB;
-range = [2 253];
+SearchAgents_no = parameters.pop_size;
+ub = parameters.UB;
+lb = parameters.LB;
+range = [lb ub];
 
 % initialize alpha, beta, and delta_pos
 Alpha_pos=zeros(1,dim);
@@ -110,10 +132,10 @@ while l<Max_iter
             Positions(i,j)=(X1+X2+X3)/3;% Equation (3.7)
         end
     end
-    melhores_avaliacoes(l+1, 1) = Alpha_score;
+    generation_entropy(l+1, 1) = Alpha_score;
     
-    if l > 30  && std(melhores_avaliacoes(l-30:l))  < 0.01
-       numGeracoes = l;
+    if l > 30  && std(generation_entropy(l-30:l))  < 0.01
+       num_generations = l;
        break;
     end
     l=l+1;    

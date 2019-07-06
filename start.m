@@ -7,8 +7,8 @@
 % Bruteforce algorithm for testing bio-inspired algorithms in the BRATS
 % database. We used the 2017 and 2018 versions of the BRATS database.
 %
-% Authors: Ricardo Morello Santos, Prof. Guilherme Wachs Lopes and
-% Prof. Paulo Sérgio Rodrigues
+% Authors: Ricardo Morello Santos, Prof. Guilherme Wachs Lopes, 
+% Prof. Nilson Saito and Prof. Paulo Sérgio Rodrigues
 % Institution: Group of Signal Processing, Centro Universitario da FEI,
 % Sao Bernardo do Campo, Brazil
 % contact: unifrsantos@fei.edu.br
@@ -86,7 +86,7 @@ function start
                %Getting the algorithms parameters
                parameters = retorna_parametros(algorithm_function);
                %Evaluating the algorithm function
-               feval('avalia_alg', algorithm_function, generations, parameters, individuo, optimized_slice1, optimized_slice2);
+               feval('execute_algorithm', algorithm_function, generations, parameters, individuo, optimized_slice1, optimized_slice2);
            end 
         end 
     end

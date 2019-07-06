@@ -82,7 +82,7 @@ for popindex = 1 : popsize
     if q == 1
         Population(popindex).cost = psrAvaliacaoShannon(Histogram, Lims);  
     else 
-        cost = psrAvaliacaoTsallis2inicial(Histogram, q, Lims);
+        cost = TsallisEvaluation(Histogram, q, Lims);
         if isnan(cost)
             cost = -Inf;
         end

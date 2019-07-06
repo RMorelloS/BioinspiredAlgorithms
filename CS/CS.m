@@ -4,6 +4,7 @@
 % This demo program implements a modified version of Cuckoo Search (CS),   %
 % using McCulloch's algorithm for Levy flights  generation of new solutions%
 % coded by Shilpa Suresh.
+%  
 % This is a modification of  the standard Cuckoo Search (CS) algorithm     %
 % by Xin-She Yang at Cambridge University.
 % -----------------------------------------------------------------
@@ -23,28 +24,52 @@
 %    Vol. 1, No. 4, 330-343 (2010). 
 %
 % --------------------------------------------------------------- %
+% Cuckoo search via Lévy flights
+% Evaluation function changed to Tsallis entropy. Changed by 
+% Ricardo Morello Santos, Prof. Guilherme Wachs Lopes, 
+% Prof. Nilson Saito and Prof. Paulo Sérgio Rodrigues
+%--------------------------------------------------------------
+% Input parameters considered:
+% Dinamic parameters:
+% The image to be segmented: I;
+% Number of thresholds: thresholds;
+% Number of generations: generations;
+% q value for Tsallis entropy: q
+% Static parameters:
+% A parameter struct containing:
+% Population size (pop_size) = 40;
+% Probability of host bird discovering the cucoo egg (pa) = 0.5;
+% Upper Bound for image thresholding (UB) = 253;
+% Lower Bound for image thresholding (LB) = 2.
+%--------------------------------------------------------------
+% Output parameters considered:
+% Optimized thresholds: bestnestR;
+% Entropy value for the optimized thresholds: fmax;
+% Number of generations until convergence: num_generations;
+% Entropy value for each generation: generation_entropy.
+%--------------------------------------------------------------
 
-function [bestnestR,fmax, numGeracoes, melhores_avaliacoes] = CS(I, thresholds, geracoes, q, parametros)
+function [bestnestR,fmax, num_generations, generation_entropy] = CS(I, thresholds, generations, q, parameters)
 
-numGeracoes = geracoes;
+num_generations = generations;
 %if nargin<1,
 % Number of nests (or different solutions)
-n=parametros.n;%(i.e cuckoos( new solution) can lay eggs in any of these n nest)
+n=parameters.pop_size;%(i.e cuckoos( new solution) can lay eggs in any of these n nest)
 %end
-melhores_avaliacoes = zeros(geracoes,1);
+generation_entropy = zeros(generations,1);
 % Discovery rate of alien eggs/solutions
-pa=parametros.pa;%(how well the host birdscan detect alian eggs)
+pa=parameters.pa;%(how well the host birdscan detect alian eggs)
  
 %% Change this if you want to get better results
-N_IterTotalR=geracoes;
-N_IterTotalG=geracoes;
-N_IterTotalB=geracoes;
+N_IterTotalR=generations;
+N_IterTotalG=generations;
+N_IterTotalB=generations;
  
 %Data
 %I=imread('image.jpg');
 % I=rgb2gray(I);
-Lmax= parametros.UB;
-LMin = parametros.LB;
+Lmax= parameters.UB;
+LMin = parameters.LB;
 Nt=size(I,1)*size(I,2);
 %% Simple bounds of the search domain
 nd=thresholds;% number of thresholds required 
@@ -142,10 +167,10 @@ for iter=1:N_IterTotalR,
         fmaxR=fmax1R;
         bestnestR= bestR;
     end
-    melhores_avaliacoes(iter, 1) = fmaxR;
+    generation_entropy(iter, 1) = fmaxR;
     
-    if iter > 30  && std(melhores_avaliacoes(iter-30:iter))  < 0.01
-        numGeracoes = iter;
+    if iter > 30  && std(generation_entropy(iter-30:iter))  < 0.01
+        num_generations = iter;
         break;
     end
 end %% End of iterations
@@ -383,7 +408,7 @@ function fnew=fobj(u,nd,probR, q)
     if q == 1
         fnew = shannon(u, nd, probR);
     else
-        fnew = psrAvaliacaoTsallis2inicial(probR, q, u);
+        fnew = TsallisEvaluation(probR, q, u);
     end
 end
     

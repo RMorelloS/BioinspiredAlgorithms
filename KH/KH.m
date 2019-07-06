@@ -11,26 +11,51 @@
 % Gandomi A.H., Yang X.S., "Evolutionary Boundary Constraint Handling Scheme"
 % Neural Computing & Applications, 2012, 21(6):1449-1462.
 % DOI: 10.1007/s00521-012-1069-0
+%--------------------------------------------------------------
+% The Krill Herd Algorithm
+% Evaluation function changed to Tsallis entropy. Changed by 
+% Ricardo Morello Santos, Prof. Guilherme Wachs Lopes, 
+% Prof. Nilson Saito and Prof. Paulo Sérgio Rodrigues
+%--------------------------------------------------------------
+% Input parameters considered:
+% Static parameters:
+% The image to be segmented: im;
+% Number of thresholds: thresholds;
+% Number of generations: Max_iter;
+% q value for Tsallis entropy: q
+% Dinamic parameters:
+% A parameter struct containing:
+% Population size (pop_size) = 40;
+% Upper Bound for image thresholding (UB) = 253;
+% Lower Bound for image thresholding (LB) = 2.
+%--------------------------------------------------------------
+% Output parameters considered:
+% Optimized thresholds: Lim;
+% Entropy value for the optimized thresholds: entropy;
+% Number of generations until convergence: num_generations;
+% Entropy value for each generation: generation_entropy.
+%--------------------------------------------------------------
 
-function [Lim, entropia, numGeracoes, melhores_avaliacoes] = KH(im, thresholds, geracoes, q, parametros)
-numGeracoes = geracoes;
-melhores_avaliacoes = zeros(geracoes,1);
+
+function [Lim, entropy, num_generations, generation_entropy] = KH(im, thresholds, Max_iter, q, parameters)
+num_generations = Max_iter;
+generation_entropy = zeros(Max_iter,1);
 %% Initial Parameter Setting
 NR = 1;  % original 10                    % Number if Runs
-NK = parametros.NK; %original = 25;  % Number if Krills
-MI = geracoes; %original 200   % Maximum Iteration
+pop_size = parameters.pop_size; %original = 25;  % Number if Krills
+MI = Max_iter; %original 200   % Maximum Iteration
 C_flag = 1;                               % Crossover flag [Yes=1]
 
 % Bounds (Normalize search space in case of highly imbalanced search space)
 dim = thresholds; % original 10 % numero de limiares
 UB = 253*ones(1,dim);
 LB = 2*ones(1,dim);
-entropia = 0;
+entropy = 0;
 
 NP = length(LB); % Number if Parameter(s)
 Dt = mean(abs(UB-LB))/2; % Scale Factor
 
-F = zeros(NP,NK);D = zeros(1,NK);N = zeros(NP,NK); %R = zeros(NP,NK);
+F = zeros(NP,pop_size);D = zeros(1,pop_size);N = zeros(NP,pop_size); %R = zeros(NP,pop_size);
 Vf = 0.02; % original 0.02; 
 Dmax = 0.005; Nmax = 0.01; Sr = 0;
 xmin = 0; xmax = 0.08; ymin = 0; ymax = 0.08;
@@ -42,13 +67,13 @@ range = [2 253];
     
     %Initial Krills positions
     for z1 = 1:NP
-        X(z1,:) = sort(randperm(254, NK) + 1);
+        X(z1,:) = sort(randperm(254, pop_size) + 1);
     end
     for n =1:size(X,2)
        X(:,n) = sort(X(:,n));
     end
     %plot(X(1,:),X(2,:),'o');
-    for z2 = 1:NK
+    for z2 = 1:pop_size
         K(z2)=cost(X(:,z2),H, q);
     end
     Kib=K;
@@ -81,11 +106,11 @@ range = [2 253];
         % original w = (0.1+0.8*(1-j/MI));
         w = (0.1+0.8*(1-j/MI));
         
-        for i = 1:NK
+        for i = 1:pop_size
             % Calculation of distances
             Rf = Xf(:,j)-X(:,i);
             Rgb = Xgb(:,j,nr)-X(:,i);
-            for ii = 1:NK
+            for ii = 1:pop_size
                 RR(:,ii) = X(:,ii)-X(:,i);
             end
             R = sqrt(sum(RR.*RR));
@@ -102,7 +127,7 @@ range = [2 253];
             nn=0;
             ds = mean(R)/5;
             alpha_n = 0;
-            for n=1:NK
+            for n=1:pop_size
                 if and(R<ds,n~=i)
                     nn=nn+1;
                     if and(nn<=4,K(i)~=K(n))
@@ -162,9 +187,9 @@ range = [2 253];
                 C_rate = 0.8 + 0.2*(K(i)-Kgb(j,nr))/Kw_Kgb;
                 Cr = rand(NP,1) < C_rate ;
                 % Random selection of Krill No. for Crossover
-                NK4Cr = round(NK*rand+.5);  
+                pop_size4Cr = round(pop_size*rand+.5);  
                 % Crossover scheme
-                X(:,i)=X(:,NK4Cr).*(1-Cr)+X(:,i).*Cr;
+                X(:,i)=X(:,pop_size4Cr).*(1-Cr)+X(:,i).*Cr;
             end
             % Update the position
             X(:,i)=X(:,i)+DX;
@@ -188,9 +213,9 @@ range = [2 253];
         end
         
         
-        melhores_avaliacoes(j, 1) = Kgb(j,1);
-        if j > 30  && std(melhores_avaliacoes(j-30:j))  < 0.01
-           numGeracoes = j;
+        generation_entropy(j, 1) = Kgb(j,1);
+        if j > 30  && std(generation_entropy(j-30:j))  < 0.01
+           num_generations = j;
            break;
         end
 
@@ -208,7 +233,7 @@ range = [2 253];
 %% Post-Processing
 [Best, Ron_No] = max(Kgb(end,:));
 Lim = round(Xgb(:,end,Ron_No));
-entropia = Kgb(end, 1);
+entropy = Kgb(end, 1);
 %Mean = mean(Kgb(end,:))
 %Worst = max(Kgb(end,:))
 %Standard_Deviation = std(Kgb(end,:))

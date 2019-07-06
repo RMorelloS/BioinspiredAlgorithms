@@ -1,18 +1,28 @@
-
-%
-% histograma: histograma em tons de cinza de uma imagem 
-% thresholds: 1, 2, 3, 4, 5 ...
-% NFireflies: 50
-% iter: 100
-% METHOD: 'TE'
-% bests: é um vetor de limiares
-%
-%
-function [bests, entropia, numGeracoes, melhores_avaliacoes] = FF(im1,thresholds,iter,q, parametro)
-numGeracoes = iter;
-melhores_avaliacoes = zeros(iter,1);
+%--------------------------------------------------------------
+% The Firefly Algorithm
+% Input parameters considered:
+% Static parameters:
+% The image to be segmented: im1;
+% Number of thresholds: thresholds;
+% Number of generations: iter;
+% q value for Tsallis entropy: q
+% Dinamic parameters:
+% A parameter struct containing:
+% Population size (pop_size) = 50;
+% Upper Bound for image thresholding (UB) = 253;
+% Lower Bound for image thresholding (LB) = 2.
+%--------------------------------------------------------------
+% Output parameters considered:
+% Optimized thresholds: bests;
+% Entropy value for the optimized thresholds: entropy;
+% Number of generations until convergence: num_generations;
+% Entropy value for each generation: generation_entropy.
+%--------------------------------------------------------------
+function [bests, entropy, num_generations, generation_entropy] = FF(im1,thresholds,iter,q, parameters)
+num_generations = iter;
+generation_entropy = zeros(iter,1);
 histograma = psrGrayHistogram(im1);
-NFireflies = parametro.nFireflies;
+NFireflies = parameters.pop_size;
 % n=number of fireflies
 % MaxGeneration=number of pseudo time steps
 if nargin<4,   NFireflies=15; iter=30; end
@@ -21,7 +31,7 @@ n=NFireflies;  MaxGeneration=iter;
 % Show info
 % help firefly_simple.m
 % Reset the random generator
-range = [2 253];
+range = [parameters.LB parameters.UB];
 
 % ------------------------------------------------
 alpha= 0.01; %50;      % Randomness 0--1 (highly random)
@@ -48,7 +58,7 @@ if q == 1
   end   
 else
   for k=1:n
-     zn(k)= psrAvaliacaoTsallis2inicial(histograma, q, fireflies(k,:)); 
+     zn(k)= TsallisEvaluation(histograma, q, fireflies(k,:)); 
   end
 end
 
@@ -75,10 +85,10 @@ end
 alpha=newalpha(alpha,delta);
 melhor = fireflies(1,:);
 
-melhores_avaliacoes(i, 1) = Lightn(1);
+generation_entropy(i, 1) = Lightn(1);
     
-if i > 30  && std(melhores_avaliacoes(i-30:i))  < 0.01
-    numGeracoes = i;
+if i > 30  && std(generation_entropy(i-30:i))  < 0.01
+    num_generations = i;
     break;
 end
 
@@ -100,7 +110,7 @@ end
 
 end   %%%%% end of iterations
 bests=melhor;
-entropia=Lightn(1);
+entropy=Lightn(1);
 
 
 

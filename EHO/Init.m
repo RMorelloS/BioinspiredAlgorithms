@@ -1,12 +1,12 @@
 function [OPTIONS, MinCost, AvgCost, InitFunction, CostFunction, FeasibleFunction, ...
-    MaxParValue, MinParValue, Population] = Init(DisplayFlag, ProblemFunction, RandSeed, Histogram, geracoes, q, thresholds, parametrosEHO, range)
+    MaxParValue, MinParValue, Population] = Init(DisplayFlag, ProblemFunction, RandSeed, Histogram, geracoes, q, thresholds, parameters, range)
 
 % Initialize population-based optimization software.
 % WARNING: some of the optimization routines will not work if population size is odd.
-OPTIONS.popsize = parametrosEHO.popsize; %50; % total population size
+OPTIONS.popsize = parameters.pop_size; %50; % total population size
 OPTIONS.Maxgen = geracoes; %200; %50; % generation count limit
 OPTIONS.numVar = thresholds; % original 20; % number of vriables in each population member
-OPTIONS.numClan = parametrosEHO.numClan; % number of Function Evaluations (FEs)
+OPTIONS.numClan = parameters.numClan; % number of Function Evaluations (FEs)
 OPTIONS.numElephantInEachClan = OPTIONS.popsize/OPTIONS.numClan;
 OPTIONS.MaxFEs = 0.3E4; % number of Function Evaluations (FEs)
 

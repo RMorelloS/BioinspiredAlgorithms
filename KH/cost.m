@@ -6,7 +6,7 @@ function f=cost(X,H, q)
 if q == 1
     f=feval('psrAvaliacaoShannon',H, X');
 else
-    f=feval('psrAvaliacaoTsallis2inicial',H, q, X');         
+    f=feval('TsallisEvaluation',H, q, X');         
 end
 
 if isnan(f)

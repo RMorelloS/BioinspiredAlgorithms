@@ -177,7 +177,7 @@ function o = F0(x,H, q)
     if(q == 1)
         o = psrAvaliacaoShannon(H, x);
     else
-        o = psrAvaliacaoTsallis2inicial(H, q, x);
+        o = TsallisEvaluation(H, q, x);
     end
 end
 
