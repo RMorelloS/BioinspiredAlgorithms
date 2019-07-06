@@ -1,9 +1,9 @@
 # BioInspiredAlgorithmsComparison
 Comparison of bio-inspired algorithms for medical image segmentation using Tsallis entropy on the BRATS dataset (years 2017 and 2018) using MATLAB.
 # Authors
-Ricardo Morello Santos, Prof. Guilherme Wachs Lopes, Prof. Nilson Saito and Prof. Paulo Sérgio Rodrigues
+Prof. Guilherme A. Wachs Lopes, Ricardo M. Santos, Prof.Nilson T. Saito and Prof. Paulo S. Rodrigues
 # General instructions
-The main file for this experiment is "start.m". Each algorithm is executed through the "execute_algorithm.m" file. 
+The main file for this experiment is "start.m". It is responsible for iterating through each patient in the dataset and each algorithm. The algorithms are executed through the "execute_algorithm.m" file. 
 Also, each algorithm may be executed independently for any kind of image. Follow the instructions in the header of each algorithm file to get to know better about the parameters considered. A description of each algorithm and their respective parameters is suplied below.
 
 # Algorithms and their parameters:
